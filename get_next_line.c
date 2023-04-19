@@ -6,13 +6,13 @@
 /*   By: arivero- <arivero-@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 13:12:10 by arivero-          #+#    #+#             */
-/*   Updated: 2023/04/17 15:40:26 by arivero-         ###   ########.fr       */
+/*   Updated: 2023/04/19 14:35:08 by arivero-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*ft_next(char **temp)
+static char	*next_line(char **temp)
 {
 	char	*line;
 	char	*ptr;
@@ -33,7 +33,7 @@ static char	*ft_next(char **temp)
 	return (line);
 }
 
-static char	*ft_read(char *temp, int fd, char *buf)
+static char	*read_line(char *temp, int fd, char *buf)
 {
 	ssize_t		r;
 
@@ -56,7 +56,7 @@ static char	*ft_read(char *temp, int fd, char *buf)
 
 char	*get_next_line(int fd)
 {
-	static char	*temp[1024];
+	static char	*temp[10];
 	char		*buf;
 
 	if (fd == -1 || BUFFER_SIZE < 1)
@@ -71,7 +71,7 @@ char	*get_next_line(int fd)
 		free (temp[fd]);
 		return (NULL);
 	}
-	temp[fd] = ft_read (temp[fd], fd, buf);
+	temp[fd] = read_line (temp[fd], fd, buf);
 	if (!temp[fd])
 		return (NULL);
 	if (!*temp[fd])
@@ -80,5 +80,5 @@ char	*get_next_line(int fd)
 		temp[fd] = NULL;
 		return (NULL);
 	}
-	return (ft_next(&temp[fd]));
+	return (next_line(&temp[fd]));
 }
