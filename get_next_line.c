@@ -6,7 +6,7 @@
 /*   By: arivero- <arivero-@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 13:12:10 by arivero-          #+#    #+#             */
-/*   Updated: 2023/04/19 14:35:08 by arivero-         ###   ########.fr       */
+/*   Updated: 2023/04/20 12:33:17 by arivero-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,10 @@ static char	*read_line(char *temp, int fd, char *buf)
 
 char	*get_next_line(int fd)
 {
-	static char	*temp[10];
+	static char	*temp[4096];
 	char		*buf;
 
-	if (fd == -1 || BUFFER_SIZE < 1)
+	if (fd == -1 || fd > 4095 || BUFFER_SIZE < 1)
 		return (NULL);
 	if (!temp[fd])
 		temp[fd] = ft_strdup("");

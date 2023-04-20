@@ -11,7 +11,7 @@ int	main(int nargs, char **args)
 	c[1] = '\0';
 	sz = 1;
 	if (nargs > 1)
-		sz = args[1][0] - '0';
+		sz = 1024;
 	srand(time(NULL));
 	dec_word = 0.9;
 	dec_line = 0.99;
