@@ -4,21 +4,18 @@
 size_t	ft_strlen (const char *str);
 char	*get_next_line (int fd);
 
-int 	main(int argc, char **argv)
+#include <time.h>
+int main(void)
 {
-	int	fd;
-	char	*line;
-
-	if (argc != 2)
-		return (1);
-	fd = open(argv[1], O_RDONLY);
-	while (1)
+	char	*s;
+	int		fd;
+	fd = open("test.txt", O_RDONLY);
+	while ((s = get_next_line(fd)))
 	{
-		line = get_next_line(fd);
-		if (!line)
-			break ;
-		write (1, line, ft_strlen (line));
-		free (line);
+		printf("%s", s);
+		/*sleep(1);*/
+		free(s);
 	}
-	return (0);
+	close(fd);
+	system("leaks a.out");
 }

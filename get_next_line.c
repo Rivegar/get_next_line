@@ -6,79 +6,79 @@
 /*   By: arivero- <arivero-@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 13:12:10 by arivero-          #+#    #+#             */
-/*   Updated: 2023/04/21 09:50:34 by arivero-         ###   ########.fr       */
+/*   Updated: 2023/04/25 13:09:26 by arivero-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*next_line(char **temp)
+static char	*next_line(char **stash)
 {
 	char	*line;
 	char	*ptr;
 
-	ptr = *temp;
+	ptr = *stash;
 	while (*ptr && *ptr != '\n')
 		++ptr;
 	ptr += (*ptr == '\n');
-	line = ft_substr (*temp, 0, (size_t)(ptr - *temp));
+	line = ft_substr (*stash, 0, (size_t)(ptr - *stash));
 	if (!line)
 	{
-		free (*temp);
+		free (*stash);
 		return (NULL);
 	}
 	ptr = ft_substr (ptr, 0, ft_strlen (ptr));
-	free (*temp);
-	*temp = ptr;
+	free (*stash);
+	*stash = ptr;
 	return (line);
 }
 
-static char	*read_line(char *temp, int fd, char *buf)
+static char	*read_line(char *stash, int fd, char *buff)
 {
-	ssize_t		r;
+	ssize_t		rline;
 
-	r = 1;
-	while (r && !ft_strchr(temp, '\n'))
+	rline = 1;
+	while (rline && !ft_strchr(stash, '\n'))
 	{
-		r = read (fd, buf, BUFFER_SIZE);
-		if (r == -1)
+		rline = read (fd, buff, BUFFER_SIZE);
+		if (rline == -1)
 		{
-			free (buf);
-			free (temp);
+			free (buff);
+			free (stash);
 			return (NULL);
 		}
-		buf[r] = 0;
-		temp = ft_strjoin_free(temp, buf);
+		buff[rline] = 0;
+		stash = ft_strjoin_free(stash, buff);
 	}
-	free (buf);
-	return (temp);
+	free (buff);
+	return (stash);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*temp[4096];
-	char		*buf;
+	static char	*stash[1024];
+	char		*buff;
 
 	if (fd == -1 || BUFFER_SIZE < 1)
 		return (NULL);
-	if (!temp[fd])
-		temp[fd] = ft_strdup("");
-	if (!temp[fd])
+	if (!stash[fd])
+		stash[fd] = ft_strdup("");
+	if (!stash[fd])
 		return (NULL);
-	buf = malloc (sizeof (*buf) * (BUFFER_SIZE + 1));
-	if (!buf)
+	buff = malloc (sizeof (*buff) * (BUFFER_SIZE + 1));
+	if (!buff)
 	{
-		free (temp[fd]);
+		free (stash[fd]);
 		return (NULL);
 	}
-	temp[fd] = read_line (temp[fd], fd, buf);
-	if (!temp[fd])
+	stash[fd] = read_line (stash[fd], fd, buff);
+	if (!stash[fd])
 		return (NULL);
-	if (!*temp[fd])
+	if (!*stash[fd])
 	{
-		free (temp[fd]);
-		temp[fd] = NULL;
+		free (stash[fd]);
+		stash[fd] = NULL;
 		return (NULL);
 	}
-	return (next_line(&temp[fd]));
+	return (next_line(&stash[fd]));
 }
